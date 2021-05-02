@@ -1,4 +1,4 @@
-# JaguarSwap Farming Contracts
+# 🐺 JaguarSwap Farming Contracts
 
 https://jaguarswap.com/.
 
