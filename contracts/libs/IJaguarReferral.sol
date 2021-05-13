@@ -2,7 +2,7 @@
 
 pragma solidity 0.6.12;
 
-interface IJaguarReferral {
+interface IPiuReferral {
     /**
      * @dev Record referral.
      */
