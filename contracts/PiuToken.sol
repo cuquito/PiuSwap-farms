@@ -4,8 +4,8 @@ pragma solidity 0.6.12;
 
 import "./libs/BEP20.sol";
 
-// JaguarToken with Governance.
-contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
+// PiuToken with Governance.
+contract PiuToken is BEP20("PiuSwap Token", "PIU") {
     // Burn address
     address public constant BURN_ADDRESS = 0x000000000000000000000000000000000000dEaD;
 
@@ -15,7 +15,7 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
         _moveDelegates(address(0), _delegates[_to], _amount);
     }
 
-    /// @dev overrides transfer function to meet tokenomics of JAGUAR
+    /// @dev overrides transfer function to meet tokenomics of PIU
     function _transfer(address sender, address recipient, uint256 amount) internal virtual override {
         if (recipient == BURN_ADDRESS) {
             super._transfer(sender, recipient, amount);
@@ -24,7 +24,7 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
             uint256 burnAmount = amount.mul(2).div(100);
             // 98% of transfer sent to recipient
             uint256 sendAmount = amount.sub(burnAmount);
-            require(amount == sendAmount + burnAmount, "JAGUAR::transfer: Burn value invalid");
+            require(amount == sendAmount + burnAmount, "PIU::transfer: Burn value invalid");
 
             super._transfer(sender, BURN_ADDRESS, burnAmount);
             super._transfer(sender, recipient, sendAmount);
@@ -134,9 +134,9 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
         );
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "JAGUAR::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "JAGUAR::delegateBySig: invalid nonce");
-        require(now <= expiry, "JAGUAR::delegateBySig: signature expired");
+        require(signatory != address(0), "PIU::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "PIU::delegateBySig: invalid nonce");
+        require(now <= expiry, "PIU::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -166,7 +166,7 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
         view
         returns (uint256)
     {
-        require(blockNumber < block.number, "JAGUAR::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "PIU::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -203,7 +203,7 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
         internal
     {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying JAGUARs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying PIUs (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -239,7 +239,7 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, "JAGUAR::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "PIU::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
@@ -262,3 +262,4 @@ contract JaguarToken is BEP20("JaguarSwap Token", "JAGUAR") {
         return chainId;
     }
 }
+
